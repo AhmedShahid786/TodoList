@@ -1,0 +1,272 @@
+@import url("https://fonts.googleapis.com/css?family=DM+Sans:400,500,700&display=swap");
+:root {
+  --checkbox-color: #ee9ca7;
+  --checkbox-shadow: rgba(238, 156, 167, 0.2);
+  --add-button: #ee9ca7;
+  --add-button-shadow: rgba(238, 156, 167, 0.4);
+}
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-image: linear-gradient(
+      62deg,
+      rgba(1, 95, 183, 0.9732216701223994) 13%,
+      rgba(255, 122, 151, 0.5) 4%
+    ),
+    linear-gradient(
+      44deg,
+      rgba(0, 43, 99, 0.07922090238615942) 39%,
+      rgba(242, 140, 143, 0.5) 18%
+    ),
+    linear-gradient(
+      118deg,
+      rgba(84, 202, 242, 0.03152997265339608) 40%,
+      rgba(247, 155, 187, 0.5) 54%
+    ),
+    linear-gradient(
+      58deg,
+      rgba(90, 90, 237, 0.16144443572260592) 83%,
+      rgba(249, 156, 142, 0.5) 23%
+    );
+  background-blend-mode: normal, lighten, multiply, hard-light;
+  font-family: "DM Sans", sans-serif;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#main_div {
+  height: 384px;
+  width: 384px;
+  background-color: #10101d;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#heading {
+  font-size: 35px;
+  line-height: 36px;
+  color: white;
+}
+
+#signup_email,
+#signup_password,
+#signin_email,
+#signin_password {
+  width: 320px;
+  height: 16%;
+  color: #ee9ca7;
+  border-radius: 9999px;
+  padding-left: 8px;
+  font-size: 16px;
+  line-height: 24px;
+  background-color: #191933;
+  border: 2px solid #ee9ca7;
+}
+
+#signup_btn,
+#signin_btn {
+  border: 0px;
+  color: #191933;
+  background-color: #ee9ca7;
+  padding: 5px;
+  font-size: 20px;
+  line-height: 28px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+#prop {
+  width: 60%;
+  border: 2px solid #ee9ca7;
+  border-radius: 2px;
+}
+
+#redirect_signin {
+  font-size: 16px;
+  line-height: 24px;
+  color: white;
+}
+#redirect_signin > button {
+  color: #10101d;
+  background-color: #ee9ca7;
+  font-size: 20px;
+  line-height: 28px;
+  margin-left: 5px;
+  padding: 4px;
+  border-radius: 10px;
+  border: 0px;
+  cursor: pointer;
+}
+
+/* Todo List Styling */
+#main_div_todo {
+  height: 90%;
+  width: 480px;
+  margin: auto auto;
+  background-color: #10101d;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  padding: 24px;
+  overflow: auto;
+}
+
+#todo_head {
+  font-size: 35px;
+  line-height: 2px solid #ee9ca7;
+  margin: 0 0 2px solid #ee9ca7 0;
+  color: #fff;
+}
+
+#todo_add_div {
+  display: flex;
+}
+
+#todo_input {
+  border-right: none;
+  width: 100%;
+  padding: 0 4px;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #fff;
+  background-color: transparent;
+  margin-right: 2px solid #ee9ca7;
+  color: #fff;
+  box-shadow: none;
+  border-radius: 0;
+  font-size: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+#todo_input::placeholder {
+  color: #fff;
+}
+/* #todo_input:hover {
+  transform: scale(1.03);
+  box-shadow: 0px 2px 0px 2px transparent;
+}   */
+
+#add_todo {
+  width: 47px;
+  height: 44px;
+  border: 2px solid #ee9ca7;
+  background:#191933;
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 2px solid #ee9ca7 0 var(--add-button-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+#add_todo:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#todos {
+  width: 100%;
+  max-height: 240px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+  overflow-y: auto;
+}
+
+#todo_ul {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#todo_ul > li {
+  border: 2px solid #ee9ca7;
+  height: 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background-color: #191933;
+  border-radius: 25px;
+  padding: 8px;
+  color: #fff;
+  margin-top: 15px;
+}
+
+.mark_as_done {
+  height: 16px;
+  width: 15px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background-color: transparent;
+  margin: 0px 10px 0px 5px;
+}
+.mark_as_done:hover {
+  border: 0px;
+  background-image: url("./assets/check.svg");
+  background-position: center;
+  background-size: cover;
+}
+
+.delete_todo_btn {
+    margin: 0px 10px 0px auto;
+  background-color: #191933;
+  border: 0px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.delete_todo_btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive CSS */
+
+@media screen and (max-width: 600px) {
+  /************************    Form Style    **************************8*/
+  #main_div {
+      height: 284px;
+      width: 284px;
+    }
+    #heading{
+        font-size: 25px;
+    }
+    #signup_email,
+    #signup_password,
+    #signin_email,
+  #signin_password {
+      width: 220px;
+      font-size: 12px;
+    }
+  #signup_btn,
+  #signin_btn {
+      padding: 5px;
+      font-size: 16px;
+      line-height: 24px;
+    }
+    #redirect_signin {
+        font-size: 14px;
+        line-height: 20px;
+    }
+  #redirect_signin > button {
+      font-size: 16px;
+    line-height: 24px;
+    padding: 4px;
+  }
+
+  /************************    Todo List Style    ***************************/
+#main_div_todo{
+      width: 300px;
+}
+}
