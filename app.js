@@ -1,4 +1,4 @@
-// Import the functions needed from the SDKs
+//? Import the functions needed from the firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 import {
@@ -28,17 +28,20 @@ const firebaseConfig = {
   measurementId: "G-T6FNJC7RFC",
 };
 
-// Initialize Firebase
+//? Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 console.log("App=>", app);
-// Initialize Firebase Authentication
+
+//? Initialize Firebase Authentication
 const auth = getAuth(app);
 console.log("auth=>", auth);
-// Initialize Cloud Firestore and get a reference to the service
+
+//? Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
 const body_div = document.getElementById("body_div");
-//Storing htmls in variables
+
+//? Storing UIs/htmls in variables
 let signup_html = `<div id="main_div">
     <p id="heading">SignUp</p>
     <input type="email" id="signup_email" placeholder="Email" autocomplete="off">
@@ -47,7 +50,7 @@ let signup_html = `<div id="main_div">
     <p id="prop"></p>
     <p id="redirect_signin">Already a user?<button id="signin_ui_btn">SignIn</button></p>
   </div>`;
-let signin_html = `<p id="heading">SignUp</p>
+let signin_html = `<p id="heading">SignIn</p>
     <input type="email" id="signin_email" placeholder="Email" autocomplete="off">
     <input type="password" id="signin_password" placeholder="Password">
     <button id="signin_btn">SignIn</button>`;
@@ -65,48 +68,64 @@ let todo_html = `<div id="main_div_todo">
             </ul>
         </div>
 
+        <div id="logout">
+        <button id="logout_btn">Logout<i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+
     </div>`;
 
+//? Access DOM elements when UI changes from todolist UI to signup form UI
 function access_form_elements(usecase) {
-  // Accessing Html Elements
+  //* usecase 1 accesses signup page elements and usecase 2 acesses signin page elements
   let main_div = document.getElementById("main_div");
   if (usecase === 1) {
-    let signup_email = document.getElementById("signup_email");
-    let signup_password = document.getElementById("signup_password");
-    let signup_btn = document.getElementById("signup_btn");
+    const signup_email = document.getElementById("signup_email");
+    const signup_password = document.getElementById("signup_password");
+    const signup_btn = document.getElementById("signup_btn");
     signup_btn.addEventListener("click", createUserAccount);
-    let signin_ui_btn = document.getElementById("signin_ui_btn");
+    const signin_ui_btn = document.getElementById("signin_ui_btn");
     signin_ui_btn.addEventListener("click", signin_ui);
   } else if (usecase === 2) {
-    let signin_email = document.getElementById("signin_email");
-    let signin_password = document.getElementById("signin_password");
-    let signin_btn = document.getElementById("signin_btn");
+    const signin_email = document.getElementById("signin_email");
+    const signin_password = document.getElementById("signin_password");
+    const signin_btn = document.getElementById("signin_btn");
     signin_btn.addEventListener("click", signin);
   }
 }
+//? Changes UI to signup UI
+function signup_ui(){
+ body_div.innerHTML = signup_html;
+  access_form_elements(1);
+}
+//? Changes UI to signin UI
+function signin_ui() {
+  main_div.innerHTML = signin_html;
+  access_form_elements(2);
+}
 
-const todo_input = document.getElementById("todo_input");
-const todo_add_btn = document.getElementById("add_todo");
-todo_add_btn.addEventListener("click", add_todo_to_db);
-const todo_list = document.getElementById("todo_ul");
+//? Access DOM elements when UI changes to todolist UI
+function access_todolist_elements() {
+  const todo_input = document.getElementById("todo_input");
+  const todo_add_btn = document.getElementById("add_todo");
+  const logout_btn = document.getElementById("logout_btn")
+  const todo_list = document.getElementById("todo_ul");
+  todo_add_btn.addEventListener("click", add_todo_to_db);
+  logout_btn.addEventListener("click", signup_ui)
+}
 
-// Listener Function
+//? Listener Function, keeps checking if the user is logged in/out
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("User logged in");
     const uid = user.uid;
   } else {
     console.log("User logged out");
-    body_div.innerHTML = signup_html;
-    access_form_elements(1);
+   signup_ui()
   }
 });
 
-// Function to create new user account
+//? Function to create new user account
 function createUserAccount() {
-  // console.log("email=>", signup_email.value);
-  // console.log("password=>", signup_password.value);
-  console.log("working");
   const auth = getAuth();
   createUserWithEmailAndPassword(
     auth,
@@ -114,18 +133,27 @@ function createUserAccount() {
     signup_password.value
   )
     .then((userCredential) => {
-      // Signed up
       const user = userCredential.user;
-      console.log("User=>", user);
+      console.log("User Account Created");
       body_div.innerHTML = todo_html;
+      access_todolist_elements();
+      add_default_todo();
+      get_todos_from_db();
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      alert(errorMessage);
+      //* Show errror popup
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `${errorCode.slice(5).toUpperCase()}`,
+        footer: "Please enter valid credentials",
+      });
     });
 }
 
+//? Function to sign user in if user already exists
 function signin() {
   signInWithEmailAndPassword(auth, signin_email.value, signin_password.value)
     .then((userCredential) => {
@@ -133,44 +161,59 @@ function signin() {
       console.log("User Signed In");
       body_div.innerHTML = todo_html;
       access_todolist_elements();
+      get_todos_from_db();
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      alert(errorMessage);
+      //* Show errror popup
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `${errorCode.slice(5).toUpperCase()}`,
+        footer: "Please enter valid credentials",
+      });
     });
 }
-function signin_ui() {
-  main_div.innerHTML = signin_html;
-  access_form_elements(2);
-}
 
+//? ****************************** TodoList Code ******************************
+
+//* Acsess DOM elements
+const todo_input = document.getElementById("todo_input");
+const todo_add_btn = document.getElementById("add_todo");
+const logout_btn = document.getElementById("logout_btn");
+const todo_list = document.getElementById("todo_ul");
+todo_add_btn.addEventListener("click", add_todo_to_db);
+logout_btn.addEventListener("click", signup_ui);
+
+//? Create a new collection in database
 let todos_collection = collection(db, "todos");
 
-// Function to add a default todo if the collection is empty
+//? Function to add a default todo if the collection is empty
 async function add_default_todo() {
   try {
     const querySnapshot = await getDocs(todos_collection);
     if (querySnapshot.empty) {
       const default_todo = {
         todo: "Add Todos",
-        date: new Date().toLocaleDateString(),
       };
       await addDoc(todos_collection, default_todo);
     }
-    get_todos_from_db(); // Ensure the todos are fetched and event listeners are applied
+    console.log("TodoList = Empty, Default Todo Added");
+    get_todos_from_db();
   } catch (e) {
     console.log(e);
-    console.log("Failed to add default todo");
+    console.log("Failed To Add Default Todo");
   }
 }
+//? Call the function to add a default todo if the collection is empty
+add_default_todo();
 
+//? Function to add todos to DB
 async function add_todo_to_db() {
   try {
-    console.log("pass");
     const obj = {
       todo: todo_input.value.trim(),
-      date: new Date().toLocaleDateString(),
     };
     if (obj.todo === "") {
       console.log("Please enter a todo item.");
@@ -180,37 +223,33 @@ async function add_todo_to_db() {
     const doc_ref = await addDoc(todos_collection, obj);
     console.log("Todo Added To DB =>", doc_ref);
     todo_input.value = "";
-    get_todos_from_db(); // Move this after clearing the input
+    get_todos_from_db();
   } catch (e) {
-    console.log(e); // Fixed typo
+    console.log(e);
     console.log("Todo Addition Failed");
   }
 }
 
+//? Function to retreive/get todos from DB and show them on DOM
 async function get_todos_from_db() {
   try {
     const querySnapshot = await getDocs(todos_collection);
     console.log("Todos Retrieved From DB");
 
-    // Clear the current list to avoid duplicates
+    //* Clear the current list from DOM to avoid duplicates
     todo_list.innerHTML = "";
 
-    if (querySnapshot.todo === "") {
-      console.log("Enter A Todo");
-      return;
-    }
     querySnapshot.forEach((doc) => {
-      const { todo, date } = doc.data();
+      const { todo } = doc.data();
       const todo_string = `<li id="${doc.id}" class="todo_done_btn"><button class="mark_as_done"></button><p>${todo}</p><button class="delete_todo_btn"><i class="fa-solid fa-trash fa-lg" style="color: #df1111;"></i></button></li>`;
-      // Add the todo_string to the DOM
+      //* Add the todo_string to the DOM
       todo_list.innerHTML += todo_string;
     });
 
-    // Query for the delete buttons after the todos have been added to the DOM
+    //* Query for the delete buttons after the todos have been added to the DOM
     let delete_todo_btns = document.querySelectorAll(".delete_todo_btn");
-    console.log(delete_todo_btns);
 
-    // Add event listeners to the delete buttons
+    //* Add event listeners to the delete buttons
     delete_todo_btns.forEach((button) => {
       button.addEventListener("click", delete_todo);
     });
@@ -218,7 +257,9 @@ async function get_todos_from_db() {
     console.log(e);
   }
 }
+get_todos_from_db();
 
+//? Function to delete todos from DB and also remove them from DOM
 async function delete_todo(event) {
   try {
     // Retrieve the document ID from the parent li element
@@ -231,6 +272,3 @@ async function delete_todo(event) {
     console.log(e);
   }
 }
-
-// Call the function to add a default todo if the collection is empty
-add_default_todo();
