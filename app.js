@@ -67,9 +67,9 @@ let todo_html = `<div id="main_div_todo">
             </ul>
         </div>
 
-        <div id="logout">
+         <div id="logout_div">
         <button id="logout_btn">Logout<i class="fa-solid fa-right-from-bracket"></i></button>
-        </div>
+    </div>
 
     </div>`;
 
@@ -200,15 +200,13 @@ async function add_default_todo() {
       };
       await addDoc(todos_collection, default_todo);
     }
-    console.log("TodoList = Empty, Default Todo Added");
+    console.log("Default Todo Added Due To Empty TodoList");
     get_todos_from_db();
   } catch (e) {
     console.log(e);
     console.log("Failed To Add Default Todo");
   }
 }
-//? Call the function to add a default todo if the collection is empty
-add_default_todo();
 
 //? Function to add todos to DB
 async function add_todo_to_db() {
@@ -249,7 +247,7 @@ async function get_todos_from_db() {
       //* Add the todo_string to the DOM
       todo_list.innerHTML += todo_string;
     });
-    
+
     //* Query for the delete buttons after the todos have been added to the DOM
     let delete_todo_btns = document.querySelectorAll(".delete_todo_btn");
     //* Add event listeners to the delete buttons
@@ -260,35 +258,36 @@ async function get_todos_from_db() {
     console.log(e);
   }
 
-  const p_array = document.querySelectorAll("#p_todo")
+  //* Query to access todo paragraph elements and make an array of them to mark
+  //* a specific todo as done.
+  const p_array = document.querySelectorAll("#p_todo");
   const elements = [];
-  p_array.forEach((ele,i)=>{
+  p_array.forEach((ele, i) => {
     elements[i] = ele;
-  })
+  });
 
   //* Query for the mark todo as_done buttons after the todos have been added to the DOM
   let mark_as_done_btns = document.querySelectorAll(".mark_as_done");
-  let todo_done = false
+  let todo_done = false;
   //* Add event listeners to the delete buttons
-  mark_as_done_btns.forEach((button,i) => {
+  mark_as_done_btns.forEach((button, i) => {
     button.addEventListener("click", () => {
-     if(todo_done == false){
-       button.style.backgroundImage = `url("./assets/check.svg")`;
-       button.style.backgroundPosition = "center";
-       button.style.backgroundSize = "cover";
-       button.style.border = "0px";
-       elements[i].style.textDecoration = "line-through";
-       todo_done = true
-      }else{
+      if (todo_done == false) {
+        button.style.backgroundImage = `url("./assets/check.svg")`;
+        button.style.backgroundPosition = "center";
+        button.style.backgroundSize = "cover";
+        button.style.border = "0px";
+        elements[i].style.textDecoration = "line-through";
+        todo_done = true;
+      } else {
         button.style.backgroundImage = "none";
         button.style.border = "2px solid white";
         elements[i].style.textDecoration = "none";
-        todo_done = false
-     }
+        todo_done = false;
+      }
     });
   });
 }
-get_todos_from_db();
 
 //? Function to delete todos from DB and also remove them from DOM
 async function delete_todo(event) {

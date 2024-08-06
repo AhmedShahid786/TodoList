@@ -50,30 +50,6 @@ body {
 }
 
 /* todo Login Form Styling */
-#logout_div{
-  height: 45px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-#logout_div > button{
-  margin-top: 15px;
-  border: 2px solid #ee9ca7;
-  color: white;
-  background-color: #10101d;
-  padding: 6px 6px;
-  font-size: 16px;
-  line-height: 28px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
-  text-align: center;
-}
-#logout_div > button > i{
-  margin-left: 5px;
-}
-
 #main_div {
   height: 384px;
   width: 384px;
@@ -142,7 +118,7 @@ body {
   cursor: pointer;
 }
 
-/* Todo List Styling */
+/*todo ************************ Todo List Styling *********************/
 #main_div_todo {
   height: 90%;
   width: 480px;
@@ -185,10 +161,6 @@ body {
 #todo_input::placeholder {
   color: #fff;
 }
-/* #todo_input:hover {
-  transform: scale(1.03);
-  box-shadow: 0px 2px 0px 2px transparent;
-}   */
 
 #add_todo {
   width: 47px;
@@ -263,7 +235,31 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsive CSS */
+#logout_div{
+  height: 45px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+#logout_div > button{
+  margin-top: 15px;
+  border: 2px solid #ee9ca7;
+  color: white;
+  background-color: #10101d;
+  padding: 6px 6px;
+  font-size: 16px;
+  line-height: 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  text-align: center;
+}
+#logout_div > button > i{
+  margin-left: 5px;
+}
+
+/******************************** Responsive CSS ********************************/
 
 @media screen and (max-width: 600px) {
   body{
@@ -303,9 +299,5 @@ body {
   /************************    Todo List Style    ***************************/
 #main_div_todo{
       width: 300px;
-}
-#logout_div > button{
-  font-size: 12px;
-  padding: 4px 6px;
 }
 }
