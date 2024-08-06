@@ -16,6 +16,7 @@ import {
   signInWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+
 //? Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDuciiCWxqoX_hywelDtxCfZGq7yLzdktk",
@@ -27,18 +28,22 @@ const firebaseConfig = {
   measurementId: "G-T6FNJC7RFC",
 };
 
+
 //? Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 console.log("App=>", app);
 
+
 //? Initialize Firebase Authentication
 const auth = getAuth(app);
 console.log("auth=>", auth);
 
+
 //? Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
 const body_div = document.getElementById("body_div");
+
 
 //? Storing UIs/htmls in variables
 let signup_html = `<div id="main_div">
@@ -73,6 +78,7 @@ let todo_html = `<div id="main_div_todo">
 
     </div>`;
 
+
 //? Access DOM elements when UI changes from todolist UI to signup form UI
 function access_form_elements(usecase) {
   //* usecase 1 accesses signup page elements and usecase 2 acesses signin page elements
@@ -92,6 +98,7 @@ function access_form_elements(usecase) {
   }
 }
 
+
 //? Changes UI to signup UI
 function signup_ui() {
   body_div.innerHTML = signup_html;
@@ -103,6 +110,7 @@ function signin_ui() {
   access_form_elements(2);
 }
 
+
 //? Access DOM elements when UI changes to todolist UI
 function access_todolist_elements() {
   const todo_input = document.getElementById("todo_input");
@@ -112,6 +120,7 @@ function access_todolist_elements() {
   todo_add_btn.addEventListener("click", add_todo_to_db);
   logout_btn.addEventListener("click", signup_ui);
 }
+
 
 //? Listener Function, keeps checking if the user is logged in/out
 onAuthStateChanged(auth, (user) => {
@@ -123,6 +132,7 @@ onAuthStateChanged(auth, (user) => {
     signup_ui();
   }
 });
+
 
 //? Function to create new user account
 function createUserAccount() {
@@ -153,6 +163,7 @@ function createUserAccount() {
     });
 }
 
+
 //? Function to sign user in if user already exists
 function signin() {
   signInWithEmailAndPassword(auth, signin_email.value, signin_password.value)
@@ -177,7 +188,9 @@ function signin() {
     });
 }
 
+
 //? ****************************** TodoList Code ******************************
+
 
 //* Acsess DOM elements
 const todo_input = document.getElementById("todo_input");
@@ -187,8 +200,10 @@ const todo_list = document.getElementById("todo_ul");
 todo_add_btn.addEventListener("click", add_todo_to_db);
 logout_btn.addEventListener("click", signup_ui);
 
+
 //? Create a new collection in database
 let todos_collection = collection(db, "todos");
+
 
 //? Function to add a default todo if the collection is empty
 async function add_default_todo() {
@@ -209,6 +224,8 @@ async function add_default_todo() {
 }
 //? Call the function to automatically add a default todo
 add_default_todo;
+
+
 //? Function to add todos to DB
 async function add_todo_to_db() {
   try {
@@ -233,8 +250,10 @@ async function add_todo_to_db() {
   }
 }
 
+
 //? Function to retreive/get todos from DB and show them on DOM
 async function get_todos_from_db() {
+  access_todolist_elements()
   try {
     const querySnapshot = await getDocs(todos_collection);
     console.log("Todos Retrieved From DB");
@@ -292,6 +311,8 @@ async function get_todos_from_db() {
 //? Calling the function so that todos are automatically shown to the user
 //? without requiring a page refresh
 get_todos_from_db()
+
+
 //? Function to delete todos from DB and also remove them from DOM
 async function delete_todo(event) {
   try {
