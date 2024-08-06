@@ -52,22 +52,25 @@ body {
 /* todo Login Form Styling */
 #logout_div{
   height: 45px;
-  width: 384px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
-#logout > button{
-  /* position: fixed; */
-  margin: 10px 0px 0px 345px;
+#logout_div > button{
+  margin-top: 15px;
   border: 2px solid #ee9ca7;
   color: white;
   background-color: #10101d;
-  padding: 4px;
+  padding: 6px 6px;
   font-size: 16px;
   line-height: 28px;
   border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
+  text-align: center;
 }
-#logout > button > i{
+#logout_div > button > i{
   margin-left: 5px;
 }
 
@@ -233,6 +236,7 @@ body {
 }
 
 .mark_as_done {
+  cursor: pointer;
   height: 16px;
   width: 15px;
   border: 2px solid white;
@@ -248,6 +252,7 @@ body {
 }
 
 .delete_todo_btn {
+  cursor: pointer;
     margin: 0px 10px 0px auto;
   background-color: #191933;
   border: 0px;
@@ -298,5 +303,9 @@ body {
   /************************    Todo List Style    ***************************/
 #main_div_todo{
       width: 300px;
+}
+#logout_div > button{
+  font-size: 12px;
+  padding: 4px 6px;
 }
 }

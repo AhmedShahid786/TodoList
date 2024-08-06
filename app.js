@@ -8,7 +8,6 @@ import {
   getDocs,
   doc,
   deleteDoc,
-  updateDoc,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
   getAuth,
@@ -17,7 +16,7 @@ import {
   signInWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-//Firebase configuration
+//? Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDuciiCWxqoX_hywelDtxCfZGq7yLzdktk",
   authDomain: "my-project-c5480.firebaseapp.com",
@@ -92,9 +91,10 @@ function access_form_elements(usecase) {
     signin_btn.addEventListener("click", signin);
   }
 }
+
 //? Changes UI to signup UI
-function signup_ui(){
- body_div.innerHTML = signup_html;
+function signup_ui() {
+  body_div.innerHTML = signup_html;
   access_form_elements(1);
 }
 //? Changes UI to signin UI
@@ -107,10 +107,10 @@ function signin_ui() {
 function access_todolist_elements() {
   const todo_input = document.getElementById("todo_input");
   const todo_add_btn = document.getElementById("add_todo");
-  const logout_btn = document.getElementById("logout_btn")
+  const logout_btn = document.getElementById("logout_btn");
   const todo_list = document.getElementById("todo_ul");
   todo_add_btn.addEventListener("click", add_todo_to_db);
-  logout_btn.addEventListener("click", signup_ui)
+  logout_btn.addEventListener("click", signup_ui);
 }
 
 //? Listener Function, keeps checking if the user is logged in/out
@@ -120,7 +120,7 @@ onAuthStateChanged(auth, (user) => {
     const uid = user.uid;
   } else {
     console.log("User logged out");
-   signup_ui()
+    signup_ui();
   }
 });
 
@@ -161,6 +161,7 @@ function signin() {
       console.log("User Signed In");
       body_div.innerHTML = todo_html;
       access_todolist_elements();
+      add_default_todo();
       get_todos_from_db();
     })
     .catch((error) => {
@@ -216,7 +217,10 @@ async function add_todo_to_db() {
       todo: todo_input.value.trim(),
     };
     if (obj.todo === "") {
-      console.log("Please enter a todo item.");
+      Swal.fire({
+        icon: "error",
+        text: "Please enter a todo item.",
+      });
       return;
     }
 
@@ -241,14 +245,13 @@ async function get_todos_from_db() {
 
     querySnapshot.forEach((doc) => {
       const { todo } = doc.data();
-      const todo_string = `<li id="${doc.id}" class="todo_done_btn"><button class="mark_as_done"></button><p>${todo}</p><button class="delete_todo_btn"><i class="fa-solid fa-trash fa-lg" style="color: #df1111;"></i></button></li>`;
+      const todo_string = `<li id="${doc.id}" class="todo_done_btn"><button class="mark_as_done"></button><p id="p_todo">${todo}</p><button class="delete_todo_btn"><i class="fa-solid fa-trash fa-lg" style="color: #df1111;"></i></button></li>`;
       //* Add the todo_string to the DOM
       todo_list.innerHTML += todo_string;
     });
-
+    
     //* Query for the delete buttons after the todos have been added to the DOM
     let delete_todo_btns = document.querySelectorAll(".delete_todo_btn");
-
     //* Add event listeners to the delete buttons
     delete_todo_btns.forEach((button) => {
       button.addEventListener("click", delete_todo);
@@ -256,13 +259,41 @@ async function get_todos_from_db() {
   } catch (e) {
     console.log(e);
   }
+
+  const p_array = document.querySelectorAll("#p_todo")
+  const elements = [];
+  p_array.forEach((ele,i)=>{
+    elements[i] = ele;
+  })
+
+  //* Query for the mark todo as_done buttons after the todos have been added to the DOM
+  let mark_as_done_btns = document.querySelectorAll(".mark_as_done");
+  let todo_done = false
+  //* Add event listeners to the delete buttons
+  mark_as_done_btns.forEach((button,i) => {
+    button.addEventListener("click", () => {
+     if(todo_done == false){
+       button.style.backgroundImage = `url("./assets/check.svg")`;
+       button.style.backgroundPosition = "center";
+       button.style.backgroundSize = "cover";
+       button.style.border = "0px";
+       elements[i].style.textDecoration = "line-through";
+       todo_done = true
+      }else{
+        button.style.backgroundImage = "none";
+        button.style.border = "2px solid white";
+        elements[i].style.textDecoration = "none";
+        todo_done = false
+     }
+    });
+  });
 }
 get_todos_from_db();
 
 //? Function to delete todos from DB and also remove them from DOM
 async function delete_todo(event) {
   try {
-    // Retrieve the document ID from the parent li element
+    //* Retrieve the document ID from the parent li element
     const doc_id = event.currentTarget.parentElement.id;
     const doc_ref = doc(db, "todos", doc_id);
     await deleteDoc(doc_ref);
