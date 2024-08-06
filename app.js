@@ -289,7 +289,9 @@ async function get_todos_from_db() {
     });
   });
 }
-
+//? Calling the function so that todos are automatically shown to the user
+//? without requiring a page refresh
+get_todos_from_db()
 //? Function to delete todos from DB and also remove them from DOM
 async function delete_todo(event) {
   try {
