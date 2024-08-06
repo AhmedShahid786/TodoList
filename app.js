@@ -207,7 +207,8 @@ async function add_default_todo() {
     console.log("Failed To Add Default Todo");
   }
 }
-
+//? Call the function to automatically add a default todo
+add_default_todo;
 //? Function to add todos to DB
 async function add_todo_to_db() {
   try {
