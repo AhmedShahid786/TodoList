@@ -22,5 +22,4 @@ This isn't just a standard to-do list app. It’s designed as a learning tool! T
 3. **Dive into the Code**: Open `index.html` in your browser, and start exploring how the app works while learning from the comments and notes provided.
 
 This project is more than just a to-do list; it's a learning journey. So, whether you’re looking to brush up on your web development skills or take your first steps into coding, this repository is for you. Dive in, experiment, and learn as you build!
-
-                                    ------------------------------------------------------------------------
+------------------------------------------------------------------------
