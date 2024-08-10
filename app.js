@@ -1,6 +1,5 @@
 //? Import the functions needed from the firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 import {
   getFirestore,
   collection,
@@ -14,6 +13,7 @@ import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
@@ -31,7 +31,6 @@ const firebaseConfig = {
 
 //? Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 console.log("App=>", app);
 
 
@@ -40,7 +39,7 @@ const auth = getAuth(app);
 console.log("auth=>", auth);
 
 
-//? Initialize Cloud Firestore and get a reference to the service
+//? Initialize Cloud Firestore and get a reference to the database service
 const db = getFirestore(app);
 const body_div = document.getElementById("body_div");
 
@@ -111,22 +110,13 @@ function signin_ui() {
 }
 
 
-//? Access DOM elements when UI changes to todolist UI
-function access_todolist_elements() {
-  const todo_input = document.getElementById("todo_input");
-  const todo_add_btn = document.getElementById("add_todo");
-  const logout_btn = document.getElementById("logout_btn");
-  const todo_list = document.getElementById("todo_ul");
-  todo_add_btn.addEventListener("click", add_todo_to_db);
-  logout_btn.addEventListener("click", signup_ui);
-}
-
-
 //? Listener Function, keeps checking if the user is logged in/out
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("User logged in");
-    const uid = user.uid;
+    //* Calling the function so that todos are automatically shown to the user
+    //* without requiring a page refresh
+    get_todos_from_db();
   } else {
     console.log("User logged out");
     signup_ui();
@@ -146,7 +136,6 @@ function createUserAccount() {
       const user = userCredential.user;
       console.log("User Account Created");
       body_div.innerHTML = todo_html;
-      access_todolist_elements();
       add_default_todo();
       get_todos_from_db();
     })
@@ -171,7 +160,6 @@ function signin() {
       const user = userCredential.user;
       console.log("User Signed In");
       body_div.innerHTML = todo_html;
-      access_todolist_elements();
       add_default_todo();
       get_todos_from_db();
     })
@@ -189,16 +177,18 @@ function signin() {
 }
 
 
+//? Function to sign user out
+function log_out() {
+  signOut(auth)
+    .then(() => {
+      console.log("User LogOut Successful");
+    })
+    .catch((error) => {
+      console.log("Error In User SignOut=>", error);
+    });
+}
+
 //? ****************************** TodoList Code ******************************
-
-
-//* Acsess DOM elements
-const todo_input = document.getElementById("todo_input");
-const todo_add_btn = document.getElementById("add_todo");
-const logout_btn = document.getElementById("logout_btn");
-const todo_list = document.getElementById("todo_ul");
-todo_add_btn.addEventListener("click", add_todo_to_db);
-logout_btn.addEventListener("click", signup_ui);
 
 
 //? Create a new collection in database
@@ -214,8 +204,8 @@ async function add_default_todo() {
         todo: "Add Todos",
       };
       await addDoc(todos_collection, default_todo);
+      console.log("Default Todo Added Due To Empty TodoList");
     }
-    console.log("Default Todo Added Due To Empty TodoList");
     get_todos_from_db();
   } catch (e) {
     console.log(e);
@@ -223,7 +213,7 @@ async function add_default_todo() {
   }
 }
 //? Call the function to automatically add a default todo
-add_default_todo;
+add_default_todo();
 
 
 //? Function to add todos to DB
@@ -241,7 +231,7 @@ async function add_todo_to_db() {
     }
 
     const doc_ref = await addDoc(todos_collection, obj);
-    console.log("Todo Added To DB =>", doc_ref);
+    console.log("Todo Added To DB =>");
     todo_input.value = "";
     get_todos_from_db();
   } catch (e) {
@@ -253,10 +243,18 @@ async function add_todo_to_db() {
 
 //? Function to retreive/get todos from DB and show them on DOM
 async function get_todos_from_db() {
-  access_todolist_elements()
+  //* Access todolist DOM elements
+  const todo_input = document.getElementById("todo_input");
+  const todo_add_btn = document.getElementById("add_todo");
+  const logout_btn = document.getElementById("logout_btn");
+  const todo_list = document.getElementById("todo_ul");
+  todo_add_btn.addEventListener("click", add_todo_to_db);
+  logout_btn.addEventListener("click", signup_ui);
+
   try {
     const querySnapshot = await getDocs(todos_collection);
     console.log("Todos Retrieved From DB");
+    
 
     //* Clear the current list from DOM to avoid duplicates
     todo_list.innerHTML = "";
@@ -308,9 +306,6 @@ async function get_todos_from_db() {
     });
   });
 }
-//? Calling the function so that todos are automatically shown to the user
-//? without requiring a page refresh
-get_todos_from_db()
 
 
 //? Function to delete todos from DB and also remove them from DOM
@@ -320,8 +315,8 @@ async function delete_todo(event) {
     const doc_id = event.currentTarget.parentElement.id;
     const doc_ref = doc(db, "todos", doc_id);
     await deleteDoc(doc_ref);
+    console.log("Todo Deleted From DB");
     add_default_todo();
-    get_todos_from_db();
   } catch (e) {
     console.log(e);
   }
