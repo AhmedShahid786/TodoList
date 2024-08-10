@@ -117,6 +117,9 @@ onAuthStateChanged(auth, (user) => {
     //* Calling the function so that todos are automatically shown to the user
     //* without requiring a page refresh
     get_todos_from_db();
+
+    //* Call the function to automatically add a default todo if todolist is empty
+    add_default_todo();
   } else {
     console.log("User logged out");
     signup_ui();
@@ -212,8 +215,6 @@ async function add_default_todo() {
     console.log("Failed To Add Default Todo");
   }
 }
-//? Call the function to automatically add a default todo
-add_default_todo();
 
 
 //? Function to add todos to DB
@@ -249,7 +250,7 @@ async function get_todos_from_db() {
   const logout_btn = document.getElementById("logout_btn");
   const todo_list = document.getElementById("todo_ul");
   todo_add_btn.addEventListener("click", add_todo_to_db);
-  logout_btn.addEventListener("click", signup_ui);
+  logout_btn.addEventListener("click", log_out);
 
   try {
     const querySnapshot = await getDocs(todos_collection);
