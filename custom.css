@@ -285,14 +285,12 @@ body {
       padding: 5px;
       font-size: 16px;
       line-height: 24px;
-      border: 2px solid white;
     }
     #redirect_signin {
       font-size: 14px;
       line-height: 20px;
     }
     #redirect_signin > button {
-    border: 2px solid white;
       font-size: 16px;
     line-height: 24px;
     padding: 4px;
