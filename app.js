@@ -195,7 +195,7 @@ function log_out() {
 
 
 //? Create a new collection in database
-let todos_collection = collection(db, "todos");
+let todos_collection = collection(db, "todos"); 
 
 
 //? Function to add a default todo if the collection is empty
